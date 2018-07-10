@@ -1,19 +1,17 @@
-import numpy
-import pandas as pd
+import numpy, pandas as pd, tensorflow as tf
 import matplotlib.pyplot as plt
 from sklearn import preprocessing
 from keras.models import Sequential
-from keras.layers import Dense,Dropout
+from keras.models import model_from_json
+from keras.layers import Dense
 numpy.random.seed(10)
 
 def PreprocessData(raw_df):
     df = raw_df
     x_OneHot_df = pd.get_dummies(data=df, columns=["fico_band", "platform"])
     #x_OneHot_df = pd.get_dummies(data=df, columns=["fico_band"])
-
     ndarray = x_OneHot_df.values
     Features = ndarray[:, 1:]
-    print(Features)
     Label = ndarray[:, 0]
     minmax_scale = preprocessing.MinMaxScaler(feature_range=(0, 1))
     scaledFeatures = minmax_scale.fit_transform(Features)
@@ -46,7 +44,6 @@ if __name__ == "__main__":
 
     train_Features, train_Label = PreprocessData(train_df)
     test_Features, test_Label = PreprocessData(test_df)
-    print(train_Features)
 
     model = Sequential()
 
@@ -68,19 +65,36 @@ if __name__ == "__main__":
     model.compile(loss='binary_crossentropy',
                   optimizer='adam', metrics=['accuracy'])
 
-    print(train_Features)
-
     train_history = model.fit(x=train_Features,
                               y=train_Label,
                               validation_split=0.1,
                               epochs=30,
                               batch_size=30, verbose=2)
 
-    show_train_history(train_history, 'acc', 'val_acc')
+    #show_train_history(train_history, 'acc', 'val_acc')
 
-    show_train_history(train_history, 'loss', 'val_loss')
+    #show_train_history(train_history, 'loss', 'val_loss')
 
-    scores = model.evaluate(x=test_Features,
-                            y=test_Label)
+    # save model as JSON
+    model_json = model.to_json()
+    with open("model_store/model.json", "w") as json_file:
+        json_file.write(model_json)
 
-    print (scores[1])
+    # save model as HDF5
+    model.save("model_store/model.h5")
+    print("Saved model to 'model_store/' ")
+
+    # load model (HDF5)
+    loaded_model = tf.contrib.keras.models.load_model('model_store/model.h5')
+    print("Loaded HDF5 model from disk 'model_store/' ")
+
+    # load model (json)
+    # json_file = open('model_store/model.json', 'r')
+    # loaded_model_json = json_file.read()
+    # json_file.close()
+    # loaded_model = model_from_json(loaded_model_json)
+    # print("Loaded json model from disk 'model_store/' ")
+
+    # evaluate loaded model on test data
+    score = loaded_model.evaluate(x=test_Features, y=test_Label, verbose=0)
+    print("%s: %.2f%%" % (loaded_model.metrics_names[1], score[1] * 100))
