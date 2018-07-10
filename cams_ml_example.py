@@ -4,7 +4,8 @@ from sklearn import preprocessing
 from keras.models import Sequential
 from keras.models import model_from_json
 from keras.layers import Dense
-numpy.random.seed(10)
+#numpy.random.seed(10)
+numpy.set_printoptions(threshold=numpy.nan)
 
 def PreprocessData(raw_df):
     df = raw_df
@@ -86,6 +87,7 @@ if __name__ == "__main__":
     loaded_model = tf.contrib.keras.models.load_model('model_store/model.h5')
     print("Loaded HDF5 model from disk 'model_store/' ")
 
+
     # load model (json)
     # json_file = open('model_store/model.json', 'r')
     # loaded_model_json = json_file.read()
@@ -95,4 +97,10 @@ if __name__ == "__main__":
 
     # evaluate loaded model on test data
     score = loaded_model.evaluate(x=test_Features, y=test_Label, verbose=0)
+
+
+
     print("%s: %.2f%%" % (loaded_model.metrics_names[1], score[1] * 100))
+
+    predict_result = model.predict(x=test_Features)
+    print (predict_result)
