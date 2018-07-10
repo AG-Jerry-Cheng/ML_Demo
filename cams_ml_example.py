@@ -18,7 +18,6 @@ def PreprocessData(raw_df):
 
     return scaledFeatures, Label
 
-
 def show_train_history(train_history,train,validation):
     plt.plot(train_history.history[train])
     plt.plot(train_history.history[validation])
@@ -46,7 +45,6 @@ if __name__ == "__main__":
     test_Features, test_Label = PreprocessData(test_df)
 
     model = Sequential()
-
     # create input layer
     model.add(Dense(units=40, input_dim=21,
                     kernel_initializer='uniform',
