@@ -33,6 +33,5 @@ if __name__ == "__main__":
     model.compile(loss='binary_crossentropy',
                   optimizer='adam',
                   metrics=['accuracy'])
-    print (predict_Features)
     preds = model.predict(predict_Features)
     print (preds)
