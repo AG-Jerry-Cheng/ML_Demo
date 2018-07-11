@@ -10,7 +10,6 @@ def PreprocessData(raw_df):
     #x_OneHot_df = pd.get_dummies(data=df, columns=["fico_band"])
     ndarray = x_OneHot_df.values
     Features = ndarray[:, 1:]
-    Label = ndarray[:, 0]
     minmax_scale = preprocessing.MinMaxScaler(feature_range=(0, 1))
     scaledFeatures = minmax_scale.fit_transform(Features)
 
