@@ -3,8 +3,14 @@ from keras.models import load_model
 from sklearn import preprocessing
 numpy.set_printoptions(threshold=numpy.nan)
 
-def PreprocessData(raw_df):
-    df = raw_df
+def GetPredictionData():
+    all_df = pd.read_excel("data/cams_data_full.xls")
+    cols = ['result', 'fico_score', 'platform', 'down_payment', 'loan_amount', 'fico_band', 'age', 'year',
+            'monthly_income', 'estimated_monthly_payment', 'payment_to_income', 'loan_to_value',
+            'bankruptcies_on_record', 'debt_to_income_ratio', 'current_delinquencies', 'vehicle_msrp']
+    all_df = all_df[cols]
+    msk = numpy.random.rand(len(all_df)) < 0.8
+    df = all_df[~msk]
     x_OneHot_df = pd.get_dummies(data=df, columns=["fico_band", "platform"])
     #x_OneHot_df = pd.get_dummies(data=df, columns=["fico_band"])
     ndarray = x_OneHot_df.values
@@ -16,14 +22,7 @@ def PreprocessData(raw_df):
 
 
 if __name__ == "__main__":
-    all_df = pd.read_excel("data/cams_data_full.xls")
-    cols=['result', 'fico_score', 'platform', 'down_payment', 'loan_amount', 'fico_band', 'age', 'year',
-          'monthly_income', 'estimated_monthly_payment', 'payment_to_income', 'loan_to_value',
-          'bankruptcies_on_record', 'debt_to_income_ratio', 'current_delinquencies', 'vehicle_msrp']
-    all_df = all_df[cols]
-    msk = numpy.random.rand(len(all_df)) < 0.8
-    predict_df = all_df[~msk]
-    predict_Features = PreprocessData(predict_df)
+    predict_Features = GetPredictionData()
 
     # load model and prediction
     model = load_model('model_store/model.h5')
