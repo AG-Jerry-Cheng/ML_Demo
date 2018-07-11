@@ -1,7 +1,6 @@
-from keras.models import load_model
 import numpy, pandas as pd
+from keras.models import load_model
 from sklearn import preprocessing
-#numpy.random.seed(10)
 numpy.set_printoptions(threshold=numpy.nan)
 
 def PreprocessData(raw_df):

@@ -4,7 +4,6 @@ from sklearn import preprocessing
 from keras.models import Sequential
 from keras.models import model_from_json
 from keras.layers import Dense
-#numpy.random.seed(10)
 numpy.set_printoptions(threshold=numpy.nan)
 
 def PreprocessData(raw_df):
